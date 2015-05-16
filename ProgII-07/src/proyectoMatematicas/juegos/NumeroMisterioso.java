@@ -7,7 +7,7 @@ import proyectoMatematicas.Utilidades;
 public class NumeroMisterioso implements Jugable {
 
 	@Override
-	public static void jugar() {
+	public void jugar() {
 		boolean continua = true;// variable para saber si desea jugar de nuevo o
 		// no
 		boolean pasa = true; // variable utilizada para saber si pasa de nivel o

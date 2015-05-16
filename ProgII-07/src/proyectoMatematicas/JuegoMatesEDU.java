@@ -1,5 +1,14 @@
 package proyectoMatematicas;
 
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InvalidClassException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import proyectoMatematicas.juegos.Juegos;
@@ -15,6 +24,14 @@ import proyectoMatematicas.usuarios.Usuario;
 import proyectoMatematicas.usuarios.GestorUsuarios;
 
 public class JuegoMatesEDU {
+	
+	private static MayorMenorIgual mmi;
+	private static Restas r;
+	private static Sumas s;
+	private static NumeroMisterioso nm;
+	private static GestorUsuarios gestor;
+	
+	private static File file;
 
 	public static ArrayList<Usuario> arrayUsuarios;
 	public static Usuario usuario;
@@ -30,8 +47,9 @@ public class JuegoMatesEDU {
 	/**Metodo que lanza el menu inicial del juego para saber si el usuario introducio
 	 * existe o no 
 	 * @return true en caso de que el usuario introducido exista
+	 * @throws IOException 
 	 */
-	public static boolean lanzarMenuInicial() {
+	public static boolean lanzarMenuInicial() throws IOException {
 		int opcion = 0;
 
 		// Escribimos el menu
@@ -112,9 +130,10 @@ public class JuegoMatesEDU {
 	 * borrar profesor
 	 * modificar prefesor
 	 * listar profesores
+	 * @throws IOException 
 	 * 
 	 */
-	public static void lanzarMenuAdministrador() {
+	public static void lanzarMenuAdministrador() throws IOException {
 		int opcion = 0;
 
 		// Escribimos el menu
@@ -125,12 +144,15 @@ public class JuegoMatesEDU {
 
 		// Comprobamos que la opción sea alguno de los valores permitidos
 		
-		switch (opcion)
-		{
-			case 1:((GestorUsuarios) JuegoMatesEDU.usuario).crearProfesor();break;
-			case 2:((GestorUsuarios) JuegoMatesEDU.usuario).borrarProfesor();break; 
-			case 3:((GestorUsuarios) JuegoMatesEDU.usuario).modificarProfesor();break; 
-			case 4:((GestorUsuarios) JuegoMatesEDU.usuario).listarProfesores();break; 
+		switch (opcion) {
+			case 1: gestor.crearProfesor();
+				break;
+			case 2: gestor.borrarProfesor();
+				break; 
+			case 3: gestor.modificarProfesor();
+				break; 
+			case 4: gestor.listarProfesores();
+				break; 
 			default: System.out.println();
 			System.out.println("Gracias por jugar a este juego... ^_^");
 			
@@ -142,9 +164,10 @@ public class JuegoMatesEDU {
 	 * borrar alumno
 	 * modificar alumno
 	 * listar alumnos
+	 * @throws IOException 
 	 * 
 	 */
-	public static void lanzarMenuProfesor() {
+	public static void lanzarMenuProfesor() throws IOException {
 		int opcion = 0;
 
 		// Escribimos el menu
@@ -156,10 +179,10 @@ public class JuegoMatesEDU {
 		// Comprobamos que la opción sea alguno de los valores permitidos
 		switch (opcion)
 		{
-			case 1:((GestorUsuarios) JuegoMatesEDU.usuario).crearAlumno();break;
-			case 2:((GestorUsuarios) JuegoMatesEDU.usuario).borrarAlumno();break; 
-			case 3:((GestorUsuarios) JuegoMatesEDU.usuario).modificarAlumno();break; 
-			case 4:((GestorUsuarios) JuegoMatesEDU.usuario).listarAlumnos();break; 
+			case 1: gestor.crearAlumno();break;
+			case 2: gestor.borrarAlumno();break; 
+			case 3: gestor.modificarAlumno();break; 
+			case 4: gestor.listarAlumnos();break; 
 			default: System.out.println();
 			System.out.println("Gracias por jugar a este juego... ^_^");
 			
@@ -186,13 +209,13 @@ public class JuegoMatesEDU {
 		// Comprobamos que la opción sea alguno de los valores permitidos
 		switch (opcion)
 		{
-			case 1:MayorMenorIgual.jugar();
+			case 1: mmi.jugar();
 			break;
-			case 2:Sumas.jugar();
+			case 2: s.jugar();
 			break; 
-			case 3:Restas.jugar();
+			case 3: r.jugar();
 			break; 
-			case 4:NumeroMisterioso.jugar();
+			case 4: nm.jugar();
 			
 			break; 
 			default: System.out.println();
@@ -238,23 +261,93 @@ public class JuegoMatesEDU {
 		return num;
 	}
 
-	public static void main(String[] args) {
-
-		arrayUsuarios = new ArrayList<Usuario>();
+	public static void main(String[] args) throws ClassNotFoundException, IOException {
+		
+		// file to use
+		file = new File("users.dat");
+		
+		// create users
+		check_arrays();	
+		
+		// games
+		mmi = new MayorMenorIgual();
+		r = new Restas();
+		s = new Sumas();
+		nm = new NumeroMisterioso();
+		
+		
 		boolean iniciado = true;
-		Administrador admin = new Administrador("Juan", "Perico", 666666,
-				"admin", "1234");
-		arrayUsuarios.add(admin);
-		Profesor prof1 = new Profesor("Profesor", "Oak", 234123, "oak", "2345",
-				"Informatica");
-		arrayUsuarios.add(prof1);
-		Alumno alum1 = new Alumno("David", "Valle", 235183, "deif", "5678");
-		arrayUsuarios.add(alum1);
-		GestorUsuarios gestor = new GestorUsuarios();
+		
+		gestor = new GestorUsuarios(arrayUsuarios, file);
 
 		while (iniciado) {
 			iniciado = lanzarMenuInicial();
 		}
+	}
+	
+	private static void check_arrays() throws IOException, ClassNotFoundException{
+		
+		arrayUsuarios = new ArrayList<Usuario>();
+		
+		// check if file exists
+		if(!file.exists()){
+			file.createNewFile();
+			write_users();
+		}else{
+			read_users();
+		}
+	}
+	
+	public static void write_users() throws IOException{
+		System.out.println("escribiendo");
+		arrayUsuarios.add(new Administrador("Juan", "Perico", 666666,"admin", "1234"));
+		arrayUsuarios.add(new Profesor("Profesor", "Oak", 234123, "oak", "2345","Informatica"));
+		arrayUsuarios.add(new Alumno("David", "Valle", 235183, "deif", "5678",5.0));
+		
+		FileOutputStream fos = new FileOutputStream(file);
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		
+		for(Usuario u : arrayUsuarios){
+			oos.writeObject(u);
+		}
+		
+		oos.close();
+		fos.close();
+	}
+	
+	public static void read_users() throws IOException, ClassNotFoundException{
+		System.out.println("leyendo");
+		
+		FileInputStream fis = new FileInputStream(file);
+		ObjectInputStream ois = new ObjectInputStream(fis);
+
+	    for (;;) {
+	    	Usuario u;
+	        try{
+	        	u = (Usuario) ois.readObject();
+	        	arrayUsuarios.add(u);
+	        }catch(EOFException e){
+	        	ois.close();
+	    		fis.close();
+	        	break;
+	        }catch(InvalidClassException i){
+	        	ois.close();
+	    		fis.close();
+	    		if(file.exists()){
+	    			file.delete();
+	    			file.createNewFile();
+	    		}
+	    		write_users();
+	        	break;
+	        }
+	    }
+	    
+		
+	}
+	
+	public static ArrayList<Usuario> get_usuarios(){
+		if(arrayUsuarios != null) return arrayUsuarios;
+		else return null;
 	}
 
 }

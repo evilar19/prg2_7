@@ -6,7 +6,6 @@ import proyectoMatematicas.Utilidades;
 
 public class MayorMenorIgual implements Jugable {
 
-	@Override
 	public void jugar() {
 		boolean continua = true;// variable para saber si desea jugar de nuevo o
 		// no
@@ -21,7 +20,7 @@ public class MayorMenorIgual implements Jugable {
 
 		System.out.println("Bienvenido al juego matematico educativo");
 		System.out
-				.println("ï¿½ï¿½ï¿½PORQUE LAS MATES NO TIENEN QUE SER ABURRIDAS!!!");
+				.println("¿PORQUE LAS MATES NO TIENEN QUE SER ABURRIDAS!!!");
 
 		do {
 			for (int i = 0; i < 10; i++) {

@@ -1,33 +1,40 @@
 package proyectoMatematicas.usuarios;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import proyectoMatematicas.juegos.Juegos;
-
+@SuppressWarnings("serial")
 public class Alumno extends Usuario {
 
-	private HashMap<String, ArrayList<Juegos>> partidas;
-	public Alumno() {
-		super();
-		partidas = new HashMap<String, ArrayList<Juegos>> ();
+	private double nota;
 
-		// TODO Auto-generated constructor stub
-	}
-
-	public Alumno(String nombre, String apellido, int dni, String user,
-			String contrasena) {
+	public Alumno(String nombre, String apellido, int dni, String user, String contrasena, double nota) {
 		super(nombre, apellido, dni, user, contrasena);
-		partidas = new HashMap<String, ArrayList<Juegos>> ();
-		// TODO Auto-generated constructor stub
+		this.nota = nota;
 	}
 
-	public Alumno(String nombre, String apellido, int dni) {
-		// TODO Auto-generated constructor stub
+	public String getNombre() {
+		return nombre;
 	}
 
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public int getDni() {
+		return dni;
+	}
+
+	public void setDni(int dni) {
+		this.dni = dni;
+	}
+
+	public double getNota() {
+		return nota;
+	}
+
+	public void setNota(double nota) {
+		this.nota = nota;
+	}
+	
 	public void mostrar() {
-		System.out.println(" Nombre: " + nombre + " Apellidos: " + apellido
-				+ " DNI: " + dni + " y soy alumno.");
+		System.out.println(" Alumno: " + nombre + " " + apellido + " | DNI: " + dni + " | Nota: " + nota);
 	}
 }

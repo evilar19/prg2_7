@@ -1,31 +1,24 @@
 package proyectoMatematicas.usuarios;
 
+import java.io.Serializable;
+
 //Clase usuario que se utilizara como clase padre de las posteriores 
 //clases administrador, profesor y alumno
-public abstract class Usuario {
+@SuppressWarnings("serial")
+public abstract class Usuario implements Serializable {
 	// atributos de la clase usuario
 	protected String nombre, apellido;
 	protected int dni;
 	protected String user;
 	protected String contrasena;
-
-	// constructor vacio
-	public Usuario() {
-
-	}
-
-	// constructor normal
-	public Usuario(String nombre, String apellido, int dni, String user,
-			String contrasena) {
+	
+	public Usuario(String nombre, String apellido, int dni, String user,String contrasena) {
+		super();
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.dni = dni;
 		this.user = user;
 		this.contrasena = contrasena;
-	}
-
-	public Usuario(String nombre2, String apellido2, int dni2) {
-		// TODO Auto-generated constructor stub
 	}
 
 	// getters y setters
