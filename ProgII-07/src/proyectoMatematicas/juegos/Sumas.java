@@ -1,13 +1,28 @@
 package proyectoMatematicas.juegos;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Random;
 
 import proyectoMatematicas.Utilidades;
+import proyectoMatematicas.usuarios.Usuario;
 
 public class Sumas implements Jugable {
+	
+	private Usuario user;
+	private int points;
+	private int times;
+	private File file;
 
 	@Override
-	public void jugar() {
+	public void jugar(Usuario usuario, ArrayList<Usuario> array) {
+		int p = 0;  // 
+		int t = 0; //
+		this.user = user;
+		
 		boolean continua = true;// variable para saber si desea jugar de nuevo o
 		// no
 		boolean pasa = true; // variable utilizada para saber si pasa de nivel o
@@ -82,7 +97,48 @@ public class Sumas implements Jugable {
 		} while ((continua || nivel < 4) || salir);
 	}
 
-	public static void main(String[] args) {
+	public Sumas(int times, int points){
+		super();
+		this.points = points;
+		this.times = times;
+	}
+	
+	public Sumas(File file){
+		super();
+		this.file = file;
+	}
 
+	public int getPoints() {
+		return points;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
+	public int getTimes() {
+		return times;
+	}
+
+	public void setTimes(int times) {
+		this.times = times;
+	}
+
+	public void update_array(ArrayList<Usuario> array) throws IOException{
+		if(file.exists()){
+			file.delete();
+			file.createNewFile();
+		}else file.createNewFile();
+		
+		// write users again
+		FileOutputStream fos = new FileOutputStream(file);
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		
+		for(Usuario u : array){
+			oos.writeObject(u);
+		}
+		
+		oos.close();
+		fos.close();
 	}
 }

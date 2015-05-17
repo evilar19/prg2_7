@@ -40,7 +40,7 @@ public class GestorUsuarios{
 			System.out.println("Introduce la materia que imparte el profesor ");
 			String materia = Utilidades.leerCadena();
 
-			Profesor p = new Profesor(nombre, apellido, dni, usuario, contrasena, materia);
+			Profesor p = new Profesor(nombre, apellido, dni, usuario, contrasena, materia, null);
 			
 			boolean located = false;
 			for(Usuario u : arrayUsuarios){
@@ -156,7 +156,7 @@ public class GestorUsuarios{
 			System.out.println("Introduce el DNI del alumno ");
 			double nota = Utilidades.leerReal();
 
-			Alumno a = new Alumno(nombre, apellido, dni,usuario,contrasena,nota);
+			Alumno a = new Alumno(nombre, apellido, dni, usuario, contrasena, nota, null);
 			arrayUsuarios.add(a);
 			update_array(arrayUsuarios);
 		}

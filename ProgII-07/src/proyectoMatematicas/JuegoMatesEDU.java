@@ -11,7 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import proyectoMatematicas.juegos.Juegos;
+import proyectoMatematicas.juegos.Juego;
 import proyectoMatematicas.juegos.Jugable;
 import proyectoMatematicas.juegos.MayorMenorIgual;
 import proyectoMatematicas.juegos.NumeroMisterioso;
@@ -34,7 +34,7 @@ public class JuegoMatesEDU {
 	private static File file;
 
 	public static ArrayList<Usuario> arrayUsuarios;
-	public static Usuario usuario;
+	public static Usuario user;
 	private static void escribirMenuInicial() {
 		System.out.println("+----------------------------------------+");
 		System.out.println("| 		Maths Class- the game            |");
@@ -64,15 +64,27 @@ public class JuegoMatesEDU {
 			String nom = Utilidades.leerCadena();
 			System.out.println("INTRODUCE CONTRASEÑA");
 			String cont = Utilidades.leerCadena();
+			
+			boolean located = false;
+			for(Usuario u : arrayUsuarios){
+				if(nom.equals(u.getUser())){
+					located = true;
+					user = (Usuario) u;
+					break;
+				}
+			}
+			
+			System.out.println("" + located);
 
-			if (comprobarUsuario(nom, cont, arrayUsuarios) == 1) {
-				lanzarMenuAdministrador();
-			} else if (comprobarUsuario(nom, cont, arrayUsuarios) == 2) {
-				lanzarMenuProfesor();
-			} else if (comprobarUsuario(nom, cont, arrayUsuarios) == 3) {
-				lanzarMenuAlumno();
-			} else
-				System.out.println("El usuario introducido no existe");
+			if(located){
+				if(user instanceof Administrador){
+					lanzarMenuAdministrador();
+				}else if(user instanceof Profesor){
+					lanzarMenuProfesor();
+				}else lanzarMenuAlumno(user);
+			} else System.out.println("El usuario introducido no existe");
+			
+			
 
 		}
 
@@ -197,7 +209,7 @@ public class JuegoMatesEDU {
 	 * juegar al juego numeromisterioso
 	 * 
 	 */
-	public static void lanzarMenuAlumno() {
+	public static void lanzarMenuAlumno(Usuario u) {
 		int opcion = 0;
 
 		// Escribimos el menu
@@ -209,13 +221,13 @@ public class JuegoMatesEDU {
 		// Comprobamos que la opciÃ³n sea alguno de los valores permitidos
 		switch (opcion)
 		{
-			case 1: mmi.jugar();
+			case 1: mmi.jugar(u,arrayUsuarios);
 			break;
-			case 2: s.jugar();
+			case 2: s.jugar(u,arrayUsuarios);
 			break; 
-			case 3: r.jugar();
+			case 3: r.jugar(u,arrayUsuarios);
 			break; 
-			case 4: nm.jugar();
+			case 4: nm.jugar(u,arrayUsuarios);
 			
 			break; 
 			default: System.out.println();
@@ -225,41 +237,7 @@ public class JuegoMatesEDU {
 		
 	}
 
-	// metodo que comprueba si el usuario introducido existe y que tipo de
-	// usuario es
-	// recibe por apramento el usuario y la contraseña introducidos asi como el
-	// array
-
-	/**metodo para comprobar si el usuario introducido existe en el sistema
-	 * @param nom
-	 * @param cont
-	 * @param arrayUsuarios
-	 * @return
-	 */
-	public static int comprobarUsuario(String nom, String cont,
-			ArrayList arrayUsuarios) {
-		int num = 0;
-		for (int i = 0; i < arrayUsuarios.size(); i++) {
-			Usuario usuario = (Usuario) arrayUsuarios.get(i);
-			if ((usuario.getUser().equals(nom))
-					&& (usuario.getContrasena().equals(cont))) {
-				if (usuario instanceof Administrador) {
-					JuegoMatesEDU.usuario = (Administrador)usuario;
-					num = 1;
-				} else if (usuario instanceof Profesor) {
-					JuegoMatesEDU.usuario = (Profesor)usuario;
-					num = 2;
-				} else if (usuario instanceof Alumno) {
-					JuegoMatesEDU.usuario = (Alumno)usuario;
-					num = 3;
-				} else
-					num = 4;
-
-			}
-
-		}
-		return num;
-	}
+	
 
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		
@@ -270,10 +248,10 @@ public class JuegoMatesEDU {
 		check_arrays();	
 		
 		// games
-		mmi = new MayorMenorIgual();
-		r = new Restas();
-		s = new Sumas();
-		nm = new NumeroMisterioso();
+		mmi = new MayorMenorIgual(file);
+		r = new Restas(file);
+		s = new Sumas(file);
+		nm = new NumeroMisterioso(file);
 		
 		
 		boolean iniciado = true;
@@ -300,9 +278,9 @@ public class JuegoMatesEDU {
 	
 	public static void write_users() throws IOException{
 		System.out.println("escribiendo");
-		arrayUsuarios.add(new Administrador("Juan", "Perico", 666666,"admin", "1234"));
-		arrayUsuarios.add(new Profesor("Profesor", "Oak", 234123, "oak", "2345","Informatica"));
-		arrayUsuarios.add(new Alumno("David", "Valle", 235183, "deif", "5678",5.0));
+		arrayUsuarios.add(new Administrador("Juan", "Perico", 666666,"admin", "1234",null));
+		arrayUsuarios.add(new Profesor("Profesor", "Oak", 234123, "oak", "2345","Informatica",null));
+		arrayUsuarios.add(new Alumno("David", "Valle", 235183, "deif", "5678",5.0,null));
 		
 		FileOutputStream fos = new FileOutputStream(file);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
